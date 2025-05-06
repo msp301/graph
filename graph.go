@@ -9,6 +9,7 @@ type Vertex struct {
 	Id         uint64
 	Label      string
 	Properties map[string]interface{}
+	Value      any
 }
 
 type Edge struct {
