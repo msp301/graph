@@ -11,6 +11,6 @@ func (g *Graph) Add(id uint64, label string, value any) {
 	}
 }
 
-func (g *Graph) Edge(from uint64, to uint64, label string) {
-	g.AddEdge(Edge{From: from, To: to, Label: label})
+func (g *Graph) Edge(from uint64, to uint64, label string) error {
+	return g.AddEdge(Edge{From: from, To: to, Label: label})
 }
