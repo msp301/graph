@@ -5,18 +5,18 @@ import (
 	"testing"
 )
 
-type Value struct {
+type Thing struct {
 	Test string
 }
 
 func TestAdd(t *testing.T) {
 	got := New()
-	got.Add(1, "test", &Value{Test: "foo"})
+	got.Add(1, "test", &Thing{Test: "foo"})
 	got.Add(2, "thing", 27)
 
 	want := &Graph{
 		Vertices: map[uint64]Vertex{
-			1: {Id: 1, Label: "test", Value: &Value{Test: "foo"}},
+			1: {Id: 1, Label: "test", Value: &Thing{Test: "foo"}},
 			2: {Id: 2, Label: "thing", Value: 27},
 		},
 		Edges:     map[uint64]Edge{},
@@ -54,5 +54,36 @@ func TestEdge(t *testing.T) {
 
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("Expected: %v\nGot: %v\n", want, got)
+	}
+}
+
+func TestValue(t *testing.T) {
+	g := New()
+	g.Add(1, "test", "a")
+	g.Add(2, "test", 23)
+
+	val1, ok := Value[string](g, 1)
+	if !ok || val1 != "a" {
+		t.Fatalf("Failed to get 1: %v", val1)
+	}
+
+	val2, ok := Value[int](g, 2)
+	if !ok || val2 != 23 {
+		t.Fatalf("Failed to get 2: %v", val2)
+	}
+
+	val3, ok := Value[bool](g, 1)
+	if ok || val3 != false {
+		t.Fatalf("Failed to get 3: %v, %v", ok, val3)
+	}
+
+	val4, ok := Value[*Vertex](g, 1)
+	if ok || val4 != nil {
+		t.Fatalf("Failed to get 4: %v, %v", ok, val4)
+	}
+
+	val5, ok := Value[string](g, 5)
+	if ok || val5 != "" {
+		t.Fatalf("Failed to get 5: %v, %v", ok, val5)
 	}
 }
